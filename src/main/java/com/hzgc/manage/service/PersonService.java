@@ -2,6 +2,7 @@ package com.hzgc.manage.service;
 
 import com.hzgc.manage.dto.PersonDto;
 import com.hzgc.manage.dto.PersonQueryDto;
+import com.hzgc.manage.entity.Log;
 import com.hzgc.manage.entity.Person;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,12 +15,12 @@ public interface PersonService {
     /**
      * 返回分页
      */
-    Page<Person> findPageByXmSfz(PersonQueryDto personQueryDto, Pageable pageable);
+    Page<Person> findPageByXmSfz(PersonQueryDto personQueryDto, Pageable pageable, Log log);
 
     /**
      * 新增Person实体
      */
-    void insert(PersonDto personDto);
+    void insert(PersonDto personDto, Log log);
 
     /**
      * 修改Person实体
@@ -39,7 +40,7 @@ public interface PersonService {
     /**
      * 根据ID查询单一对象
      */
-    Person findById(String id);
+    Person findById(String id, Log log);
 
 
     /**

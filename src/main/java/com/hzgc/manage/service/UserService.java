@@ -45,7 +45,7 @@ public interface UserService {
     /**
      * 根据ID删除User实体
      */
-    void deleteById(UserDto userDto);
+    void deleteById(UserDto userDto, Log log);
 
     /**
      * 根据ID重置密码User
@@ -60,7 +60,7 @@ public interface UserService {
     /**
      * 根据ID, 修改用户
      */
-    void update(UserUpdateDto userDto);
+    void update(UserUpdateDto userDto, Log log);
 
     /**
      * 根据ID修改密码

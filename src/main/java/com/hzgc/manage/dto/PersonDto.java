@@ -1,5 +1,7 @@
 package com.hzgc.manage.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -10,7 +12,15 @@ import java.io.Serializable;
  * created by liang on 2018/11/16
  */
 @Data
+@ApiModel(value="PersonDto人口对象",description="人口对象入参")
 public class PersonDto implements Serializable {
+
+    /**
+     * 登录账号ID
+     */
+    @NotEmpty(message = "登录账号userId不能为空")
+    @ApiModelProperty(value="登录账号userId",name="userId",example="")
+    private String userId;
 
     /**
      * 身份证（sfz）

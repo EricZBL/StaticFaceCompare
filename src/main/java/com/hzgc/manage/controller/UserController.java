@@ -33,13 +33,15 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    private static String USER_CONTROLLER_CLASS_NAME = "com.hzgc.manage.controller.UserController";
+
     @Autowired
     private UserService userService;
 
     @ApiOperation(value = "账号登录")
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public ResultVO<String> login(@RequestBody @Valid UserLoginDto userLoginDto) {
-        userService.login(userLoginDto, AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "login"));
+        userService.login(userLoginDto, AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "login"));
         return ResultUtils.success();
     }
 
@@ -47,17 +49,17 @@ public class UserController {
     @RequestMapping(value = "totalList", method = RequestMethod.GET)
     public ResultVO<List<User>> totalList(@RequestParam("userid") @ApiParam(name="userid",value="登录账号id",required=true) String userid) {
 
-      Log log = new Log(userid, AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "totalList"));
+      Log log = new Log(userid, AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "totalList"));
         List<User> list = userService.findTotalByUserName(null, log);
         return ResultUtils.success(list);
 
     }
 
-    @ApiOperation(value = "查询账号列表分页列表")
+    @ApiOperation(value = "查询账号分页列表")
     @RequestMapping(value = "pageList", method = RequestMethod.POST)
     public ResultVO<Page> pageList(@RequestBody UserQueryDto userQueryDto){
 
-        Log log = new Log(userQueryDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "pageList"));
+        Log log = new Log(userQueryDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "pageList"));
             Pageable pageable =  PageRequest.of(userQueryDto.getPage(), userQueryDto.getSize());
             Page<User> page = userService.findPageByUserName(userQueryDto.getUsername(), pageable, log);
         return ResultUtils.success(page);
@@ -67,7 +69,7 @@ public class UserController {
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public ResultVO<String> insert(@RequestBody @Valid UserUpdateDto userUpdateDto) {
 
-        Log log = new Log(userUpdateDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "insert"));
+        Log log = new Log(userUpdateDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "insert"));
                  userService.insert(userUpdateDto,log);
         return ResultUtils.success();
     }
@@ -77,7 +79,7 @@ public class UserController {
     public ResultVO<User> info( @ApiParam(name="userid",value="登录账号id",required=true) String userid,
                                 @ApiParam(name="id",value="账号id",required=true) String id) {
 
-        Log log = new Log(userid, AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "info"));
+        Log log = new Log(userid, AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "info"));
         User user = userService.findById(new UserDto(userid, id), log);
         return ResultUtils.success(user);
     }
@@ -86,25 +88,24 @@ public class UserController {
     @ApiOperation(value = "修改账号")
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public ResultVO<String> update(@RequestBody @Valid UserUpdateDto userUpdateDto) {
-        Log log = new Log(userUpdateDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "update"));
+        Log log = new Log(userUpdateDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "update"));
 
-        userService.update(userUpdateDto);
+        userService.update(userUpdateDto, log);
         return ResultUtils.success();
     }
 
     @ApiOperation(value = "删除账号")
     @RequestMapping(value = "delete", method = RequestMethod.DELETE)
     public ResultVO<String> delete(@RequestBody @Valid UserDto userDto) {
-        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "delete"));
-
-        userService.deleteById(userDto);
+        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "delete"));
+        userService.deleteById(userDto, log);
         return ResultUtils.success();
     }
 
     @ApiOperation(value = "修改账号密码")
     @RequestMapping(value = "editorpwd", method = RequestMethod.POST)
     public ResultVO<String> editorpwd(@RequestBody @Valid UserPwdDto userPwdDto) {
-        Log log = new Log(userPwdDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "editorpwd"));
+        Log log = new Log(userPwdDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "editorpwd"));
 
         userService.editorpwd(userPwdDto, log);
         return ResultUtils.success();
@@ -113,7 +114,7 @@ public class UserController {
     @ApiOperation(value = "重置账号密码")
     @RequestMapping(value = "resetpwd", method = RequestMethod.POST)
     public ResultVO<String> resetpwd(@RequestBody @Valid UserDto userDto) {
-        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "resetpwd"));
+        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "resetpwd"));
 
         userService.resetpwd(userDto, log);
         return ResultUtils.success();
@@ -122,7 +123,7 @@ public class UserController {
     @ApiOperation(value = "禁用账号")
     @RequestMapping(value = "disable", method = RequestMethod.POST)
     public ResultVO<String> disable(@RequestBody @Valid UserDto userDto) {
-        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "disable"));
+        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "disable"));
 
         userService.changeStatus(userDto, UserStatusEnums.DISABLE_USER_STATUS.getCode(), log);
         return ResultUtils.success();
@@ -131,7 +132,7 @@ public class UserController {
     @ApiOperation(value = "启用账号")
     @RequestMapping(value = "enable", method = RequestMethod.POST)
     public ResultVO<String> enable(@RequestBody UserDto userDto) {
-        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue("com.hzgc.manage.controller.UserController", "enable"));
+        Log log = new Log(userDto.getUserId(), AnnUtils.getApiValue(USER_CONTROLLER_CLASS_NAME, "enable"));
         userService.changeStatus(userDto, UserStatusEnums.ENABLE_USER_STATUS.getCode(), log);
         return ResultUtils.success();
     }

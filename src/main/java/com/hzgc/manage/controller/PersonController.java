@@ -4,12 +4,13 @@ import com.hzgc.jniface.BigPictureData;
 import com.hzgc.bean.SearchOption;
 import com.hzgc.manage.dto.PersonDto;
 import com.hzgc.manage.dto.PersonQueryDto;
+import com.hzgc.manage.entity.Log;
 import com.hzgc.manage.entity.Person;
 import com.hzgc.manage.service.PersonService;
 import com.hzgc.manage.vo.ResultVO;
+import com.hzgc.utils.AnnUtils;
 import com.hzgc.utils.ResultUtils;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,78 +35,64 @@ import javax.naming.directory.SearchResult;
 @RequestMapping("/person")
 public class PersonController {
 
+    private static String PERSON_CONTROLLER_CLASS_NAME = "com.hzgc.manage.controller.PersonController";
+
     @Autowired
     private PersonService personService;
 
 
-    @ApiOperation(value = "post请求",notes="人口分页列表")
-    @ApiImplicitParam(dataType = "personQueryDto",name = "personQueryDto",value = "分页模糊匹配参数",required = true)
+    @ApiOperation(value = "人口分页列表")
     @RequestMapping(value = "pageList", method = RequestMethod.POST)
     public ResultVO<Page> pageList(@RequestBody PersonQueryDto personQueryDto){
 
+        Log log = new Log(personQueryDto.getUserId(), AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "pageList"));
         Pageable pageable = PageRequest.of(personQueryDto.getPage(), personQueryDto.getSize());
-        Page<Person> page = personService.findPageByXmSfz(personQueryDto, pageable);
+        Page<Person> page = personService.findPageByXmSfz(personQueryDto, pageable, log);
         return ResultUtils.success(page);
     }
 
-    @ApiOperation(value = "post请求",notes="人口新增")
-    @ApiImplicitParam(dataType = "PersonDto",name = "personDto",value = "人口新增",required = true)
+    @ApiOperation(value = "新增人口")
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public ResultVO<String> insert(@RequestBody PersonDto personDto) {
-        personService.insert(personDto);
+        Log log = new Log(personDto.getUserId(), AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "insert"));
+        personService.insert(personDto, log);
         return ResultUtils.success();
     }
 
-    @ApiOperation(value = "get请求",notes="单一人口查询")
-    @ApiImplicitParam(dataType = "String",name = "id",value = "人口id",required = true)
+    @ApiOperation(value = "查询人口详情")
     @RequestMapping(value = "info", method = RequestMethod.POST)
-    public ResultVO<Person> info(@RequestParam("id") String id) {
-        Person person = personService.findById(id);
+    public ResultVO<Person> info(@ApiParam(name="userid",value="登录账号id",required=true) String userid,
+                                 @ApiParam(name="id",value="人口id",required=true) String id) {
+        Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "info"));
+        Person person = personService.findById(id, log);
         return ResultUtils.success(person);
     }
 
 
-    @ApiOperation(value = "post请求",notes="人口修改")
-    @ApiImplicitParam(dataType = "PersonDto",name = "personDto",value = "人口信息名称",required = true)
+    @ApiOperation(value = "修改人口")
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public ResultVO<String> update(@RequestBody PersonDto personDto) {
+        Log log = new Log(personDto.getUserId(), AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "insert"));
         personService.update(personDto);
         return ResultUtils.success();
     }
 
     @ApiOperation(value = "delete请求",notes="根据人口ID删除")
-    @ApiImplicitParam(dataType = "String",name = "id",value = "人口id",required = true)
     @RequestMapping(value = "delete", method = RequestMethod.DELETE)
-    public ResultVO<String> delete(@RequestParam("id") String id) {
+    public ResultVO<String> delete(@ApiParam(name="userid",value="登录账号id",required=true) String userid,
+                                   @ApiParam(name="id",value="人口id",required=true) String id) {
+        Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "delete"));
         personService.deleteById(id);
         return ResultUtils.success();
     }
 
-//    @ApiOperation(value = "行人属性提取", response = CaptureResult.class)
-//    @RequestMapping(value = "person_capture", method = RequestMethod.POST)
-//    public ResultVO<CaptureResult> personFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
-//
-//        CaptureResult captureResult = new CaptureResult();
-//
-//        return ResultUtils.success(captureResult);
-//    }
-
-//    /*
-//     *人臉base64提取特征
-//     */
-//    @ApiIgnore(value = "内部调用的人脸检测接口,入参为图片的Base64字符串")
-//    @RequestMapping(value = BigDataPath.FEATURE_CHECK_BASE64, method = RequestMethod.POST)
-//    public ResponseEntity <PictureData> faceFeatureCheck_base64(@RequestBody String baseStr) {
-//        PictureData pictureData = faceExtractService.featureCheckByImage(baseStr);
-//        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(pictureData);
-//    }
-
-    /*
-     * 人臉
-     */
     @ApiOperation(value = "人脸特征值提取", response = BigPictureData.class)
     @RequestMapping(value = "/extract_picture", method = RequestMethod.POST)
-    public ResultVO<BigPictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image) {
+    public ResultVO<BigPictureData> faceFeatureExtract(@ApiParam(name = "image", value = "图片") MultipartFile image,
+                                                       @ApiParam(name="userid",value="登录账号id",required=true) String userid) {
+
+        Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "delete"));
+
         byte[] imageBin = null;
         if (image == null) {
 //            log.error("Start extract feature by binary, image is null");
@@ -129,7 +116,11 @@ public class PersonController {
     @ApiOperation(value = "以图搜图", response = SearchResult.class)
     @RequestMapping(value = "/search_picture", method = RequestMethod.POST)
     public ResultVO<SearchResult> searchPicture(
-            @RequestBody @ApiParam(value = "以图搜图查询参数") SearchOption searchOption) {
+            @RequestBody @ApiParam(value = "以图搜图查询参数") SearchOption searchOption,
+            @ApiParam(name="userid",value="登录账号id",required=true) String userid) {
+
+        Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "delete"));
+
         SearchResult searchResult;
         if (searchOption == null) {
 //            log.error("Start search picture, but search option is null");
