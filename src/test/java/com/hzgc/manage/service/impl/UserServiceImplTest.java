@@ -77,9 +77,9 @@ public class UserServiceImplTest {
     @Test
     public void save() {
 
-        Iterable<Person> all = personRepository.findAll();
+        long count = personRepository.count();
 
-        System.err.println(all);
+        System.err.println(count);
     }
 
 }
