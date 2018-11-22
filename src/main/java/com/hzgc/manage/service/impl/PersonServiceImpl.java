@@ -4,6 +4,7 @@ package com.hzgc.manage.service.impl;
 import com.hzgc.manage.dao.PersonRepository;
 import com.hzgc.manage.dto.PersonDto;
 import com.hzgc.manage.dto.PersonQueryDto;
+import com.hzgc.manage.entity.Log;
 import com.hzgc.manage.entity.Person;
 import com.hzgc.manage.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +23,14 @@ public class PersonServiceImpl implements PersonService {
 
 
     @Override
-    public Page<Person> findPageByXmSfz(PersonQueryDto personQueryDto, Pageable pageable) {
+    public Page<Person> findPageByXmSfz(PersonQueryDto personQueryDto, Pageable pageable, Log log) {
         //
 
        return personRepository.findAll(pageable);
     }
 
     @Override
-    public void insert(PersonDto personDto) {
+    public void insert(PersonDto personDto, Log log) {
 
     }
 
@@ -54,7 +55,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person findById(String id) {
+    public Person findById(String id, Log log) {
         if (id == null) {
             return null;
         }

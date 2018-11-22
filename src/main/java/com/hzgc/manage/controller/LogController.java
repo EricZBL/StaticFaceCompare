@@ -29,8 +29,7 @@ public class LogController {
     @Autowired
     private LogService logService;
 
-    @ApiOperation(value = "get请求",notes="日志分页列表")
-    @ApiImplicitParam(dataType = "LogQueryDto",name = "logQueryDto",value = "日志模糊匹配参数",required = true)
+    @ApiOperation(value = "查询日志分页列表")
     @RequestMapping(value = "pageList", method = RequestMethod.POST)
     public ResultVO<Page> pageList(@RequestBody LogQueryDto logQueryDto){
 

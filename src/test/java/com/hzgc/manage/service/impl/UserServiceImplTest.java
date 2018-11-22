@@ -1,7 +1,6 @@
 package com.hzgc.manage.service.impl;
 
-import com.hzgc.manage.dao.PersonRepository;
-import com.hzgc.manage.dao.UserRepository;
+import com.hzgc.manage.dao.*;
 import com.hzgc.manage.entity.Person;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,15 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class UserServiceImplTest {
+
+    @Autowired
+    private AreasRepository areasRepository;
+
+    @Autowired
+    private CitiesRepository citiesRepository;
+
+    @Autowired
+    private ProvincesRepository provincesRepository;
 
     @Autowired
     private PersonRepository personRepository;
@@ -77,7 +85,9 @@ public class UserServiceImplTest {
     @Test
     public void save() {
 
-        long count = personRepository.count();
+        long count = areasRepository.count();
+        long count1 = citiesRepository.count();
+        long count11 = provincesRepository.count();
 
         System.err.println(count);
     }
