@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * 异常统一处理类
@@ -38,6 +39,9 @@ public class AuthorizeExceptionHandler {
         }else if (e instanceof HzgcException) {
             HzgcException ex = (HzgcException) e;
             return ResultUtils.error(ex.getCode() , ex.getMessage());
+        }else if (e instanceof NoSuchElementException){
+
+            return ResultUtils.success();
         }
         return ResultUtils.error(ResultCodeEnums.ERROR);
     }

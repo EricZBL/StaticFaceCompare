@@ -19,15 +19,6 @@ import static org.junit.Assert.*;
 public class UserServiceImplTest {
 
     @Autowired
-    private AreasRepository areasRepository;
-
-    @Autowired
-    private CitiesRepository citiesRepository;
-
-    @Autowired
-    private ProvincesRepository provincesRepository;
-
-    @Autowired
     private PersonRepository personRepository;
 
     @Test
@@ -85,11 +76,6 @@ public class UserServiceImplTest {
     @Test
     public void save() {
 
-        long count = areasRepository.count();
-        long count1 = citiesRepository.count();
-        long count11 = provincesRepository.count();
-
-        System.err.println(count);
     }
 
 }

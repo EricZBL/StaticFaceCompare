@@ -47,7 +47,10 @@ public class PersonController {
 
         Log log = new Log(personQueryDto.getUserId(), AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "pageList"));
         Pageable pageable = PageRequest.of(personQueryDto.getPage(), personQueryDto.getSize());
+        long l = System.currentTimeMillis();
         Page<Person> page = personService.findPageByXmSfz(personQueryDto, pageable, log);
+        long ll = System.currentTimeMillis();
+        System.out.println("pagelist cost:"+(ll-l));
         return ResultUtils.success(page);
     }
 
@@ -55,7 +58,10 @@ public class PersonController {
     @RequestMapping(value = "save", method = RequestMethod.POST)
     public ResultVO<String> insert(@RequestBody PersonDto personDto) {
         Log log = new Log(personDto.getUserId(), AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "insert"));
+        long l = System.currentTimeMillis();
         personService.insert(personDto, log);
+        long ll = System.currentTimeMillis();
+        System.out.println("add cost:"+(ll-l));
         return ResultUtils.success();
     }
 
@@ -64,7 +70,10 @@ public class PersonController {
     public ResultVO<Person> info(@ApiParam(name="userid",value="登录账号id",required=true) String userid,
                                  @ApiParam(name="id",value="人口id",required=true) String id) {
         Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "info"));
+        long l = System.currentTimeMillis();
         Person person = personService.findById(id, log);
+        long ll = System.currentTimeMillis();
+        System.out.println("info cost:"+(ll-l));
         return ResultUtils.success(person);
     }
 
@@ -82,7 +91,10 @@ public class PersonController {
     public ResultVO<String> delete(@ApiParam(name="userid",value="登录账号id",required=true) String userid,
                                    @ApiParam(name="id",value="人口id",required=true) String id) {
         Log log = new Log(userid, AnnUtils.getApiValue(PERSON_CONTROLLER_CLASS_NAME, "delete"));
+        long l = System.currentTimeMillis();
         personService.deleteById(id);
+        long ll = System.currentTimeMillis();
+        System.out.println("delete cost:"+(ll-l));
         return ResultUtils.success();
     }
 

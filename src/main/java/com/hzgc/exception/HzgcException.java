@@ -23,4 +23,6 @@ public class HzgcException extends RuntimeException {
         super(msg);
         this.code = exceptionCodeEnums.getCode();
     }
+
+
 }
